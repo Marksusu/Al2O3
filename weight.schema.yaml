@@ -1,0 +1,57 @@
+# Rime schema settings
+# encoding: utf-8
+
+
+
+schema:
+  schema_id: weight
+  name: "weight"
+  version: "0.1"
+  author:
+    - Mark
+
+  description: |
+    繁简词频提示
+    ˉ¨＾ˇ˜˙ˋˊ
+
+switches:
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - reverse_lookup_translator
+    - table_translator
+
+speller:
+  alphabet: "abcdefghijklmnopqrstuvwxyz0987654321"
+
+
+menu:
+  page_size: 10
+
+translator:
+  dictionary: weight
+  enable_charset_filter: false   # 是否開啓字符集過濾
+  enable_encoder: false          # 是否開啓自動造詞
+  encode_commit_history: false   # 是否對已上屛詞自動成詞
+  enable_completion: true        # 提前顯示尚未輸入完整碼的字
+  enable_sentence: false         # 太极图自动组句
+  enable_user_dict: false        # 是否开启用户词典（用户词典记录动态字词频、用户词
+  max_phrase_length: 40          # 最大自動成詞詞長
+  always_show_comments: true
+

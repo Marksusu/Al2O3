@@ -1,0 +1,34 @@
+# Rime dictionary: 
+# encoding: utf-8
+# 
+# 单字词库都没有，只有规则
+# 与原版不同的字：一记起地〇送營兩澆[]
+
+
+
+---
+name: tcAL2O3
+version: "2020.10.28"
+sort: by_weight       # 码表的排序方式: by_weight 权重，original 原始顺序
+import_tables:                   # 编码造词的单字原料？
+  - tcAL2O3_characters                 #所有单字，有字频
+  - AL2O3_symbols                      # tc 和 cn 共同的符号，包含无频单字
+  - tcAL2O3_basic                      # 繁體自定義詞庫，是全码、二简、三简的编码对象。
+columns:    # 本词典码表格式
+  - text    # 文字
+  - code    # 输入码
+  - weight  # 权重
+  - stem    # 全码
+encoder:
+#  exclude_patterns:      # 排除Z键的输入
+#    - '^z.*$'
+  rules:                        # 大写字母表示字序，小写字母表示其所跟随的大写字母所代表的字中的编码序
+
+    - length_equal: 2             # 二字词
+      formula: "AaAbBaBb"
+    - length_equal: 3             # 三字词
+      formula: "AaAbBaCa"
+    - length_in_range: [4, 40]             # 4字及以上
+      formula: "AaBaCaZa"
+...
+

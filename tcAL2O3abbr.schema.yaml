@@ -1,0 +1,179 @@
+# Rime schema
+# encoding: utf-8
+
+
+schema:
+  schema_id: tcAL2O3abbr
+  name: "tcAL2O3abbr"
+  version: "2020.0810"
+  author:
+    - 发明创始：秋风
+    - 方案修改：Mark
+  description: |
+    “蓝宝石tcAL2O3abbr”
+    Mark自用
+    “z”键拼音反查
+  dependencies:
+    - pin
+switches:
+  - name: ascii_mode
+    reset: 0                      # 默认0或没有注明则为前者,若选1则为后者.下同
+    states: [ 中文, 英文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+#  - name: simplification
+#    states: [ 漢字, 汉字 ]    #用了这个可以在反查时显示简体，这就不用引外部词库了，用原装的就好
+  - name: extended_charset
+    states: [ 通用, 增廣 ]
+    reset: 1
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+  - name: spelling
+    states: [码, 音]
+    reset: 1
+
+
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher                               # 与 recognizer 配合设置反查触发
+    - abc_segmentor
+#    - affix_segmentor@TtcAL2O3abbr    #用户自定义分割器
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - reverse_lookup_translator
+    - history_translator@history
+    - table_translator
+#    - table_translator@TtcAL2O3abbr
+#    - "lua_translator@time_date"
+
+  filters:
+#    - simplifier         #用快捷键做设置就好
+    - uniquifier
+    - "simplifier@spelling"
+
+speller:
+  alphabet: 'zyxwvutsrqponmlkjihgfedcba'  #定义可用于输入的键
+  delimiter: " '"           
+
+translator:
+  dictionary: tcAL2O3abbr                       # 引入主码表"tcAL2O3abbr.dict.yaml"
+  initial_quality: 1             #設定此翻譯器出字優先級
+  enable_charset_filter: false   # 是否開啓字符集過濾
+  enable_encoder: false          # 是否開啓自動造詞
+  encode_commit_history: false   # 是否對已上屛詞自動成詞
+  enable_completion: true        # 提前顯示尚未輸入完整碼的字
+  enable_sentence: false         # 太极图自动组句
+  enable_user_dict: false        # 是否开启用户词典（用户词典记录动态字词频、用户词
+  max_phrase_length: 40          # 最大自動成詞詞長
+  disable_user_dict_for_patterns:
+    - "^z.*$"
+    - "^[a-y]{1,2}$"
+  always_show_comments: true
+  comment_format:                            # 提示碼自定義
+    - xform/~//                                   # 去掉编码提示前的波浪线
+  preedit_format:                            # 上屛碼自定義
+    - "xform/^/🚴/"                              # 提示简体输入方式
+abc_segmentor:                                  # 標識常規的文字段落，加上abc這個tag
+  extra_tags:
+#    - TtcAL2O3abbr
+#TtcAL2O3abbr:
+#  tag: TtcAL2O3abbr
+#  dictionary: TtcAL2O3abbr
+#  initial_quality: 0.01 # 降低繁體的优先级
+#  enable_charset_filter: false
+#  enable_encoder: false
+#  encode_commit_history: false
+#  enable_completion: true
+#  enable_sentence: false   # 太极图标，自动组词
+#  enable_user_dict: false   # 是否开启用户词典（用户词典记录动态字词频、用户词
+#  max_phrase_length: 40
+#  disable_user_dict_for_patterns:
+# 禁止某些編碼錄入用戶詞典
+# ( 可以限制常用簡碼被調整順序我是設定 /^..?$/   
+# 一二碼 不讓動，這樣就可以學習使用者習慣 常用簡碼不亂調)
+#    - "^z.*$"
+#    - "^[a-y]{1,2}$"
+#  always_show_comments: true
+#  comment_format:
+#    - xform/~//      # 去掉编码提示前的波浪线
+#  preedit_format:
+#    - "xform/^/🏇/" # 提示繁體输入方式
+
+reverse_lookup:
+  dictionary: pin
+  prism: mk_fy                # 反查改为双拼，把这一行注掉就还原为全拼反查
+  overwrite_comment: true
+  prefix: "zz"
+  preedit_format:
+    - "xform/^/🏂/" # 提示拼音反查
+#  prefix: "`"
+#  tips: "≡"     # 完全不会
+#  tips: "〔"
+#  closing_tips: "〕"
+#  preedit_format:
+#    - "xform/([nl])v/$1ü/"
+#    - "xform/([nl])ue/$1üe/"
+#    - "xform/([jqxy])v/$1u/"
+#    - xform/([nljqxy])v/$1ü/          # 输入时将 nv, lv 等替换为 nü, lü
+#  comment_format:
+#    - xform/^(\S+\s)*(\S+)$/$2/        # 让反查结果只显示最长的一个，如“你”字只显示 "wqiy"，而不是 "wq wqi wqiy"，有效！
+
+
+recognizer:
+  import_preset: default
+  patterns:
+    reverse_lookup: "^zz[a-z]*$"    #反查引导键
+#    history: "^z[a-z]*$"    #反查引导键
+#    reverse_lookup: "^`[a-z]*'?$"    #反查引导键
+
+punctuator:
+#  import_preset: default
+
+history:                        #重复上次输入
+  input: z
+  size: 1
+  initial_quality: 1
+
+spelling:
+  opencc_config: spelling.json
+  option_name: spelling
+  show_in_comment: true
+  comment_format:
+    - "xform/☯/ · /"    
+    - "xform/<br>/\r/"
+#  tags:
+#    - abc
+  tips: all 
+
+key_binder:
+#  import_preset: default                #以 default.custom.yaml 中的设置为准
+#下面的关于 bindings 可以删掉了
+# 不！！！！千万不要删掉！
+  bindings:                #如没在 default.custom.yaml 中设置，则使用以下设置
+    - {accept: Return, send: Escape, when: composing}
+    - {accept: semicolon, send: 2, when: has_menu}                     #打字时，分号──2选
+    - {accept: apostrophe, send: 3, when: has_menu}                   #打字时，引号──3选
+    - { accept: comma, send: 4, when: has_menu}                        #打字时，逗号──4选
+    - { accept: period, send: 5, when: has_menu}                          #打字时，句号──5选
+    - { accept: slash, send: 6, when: has_menu}                          #打字时，撇斜杠──6选
+    - { accept: bracketleft, send: 7, when: has_menu}                          #打字时，左方括号──7选
+    - { accept: bracketright, send: 8, when: has_menu}                          #打字时，右方括号──8选
+    - { accept: minus, send: Page_Up, when: paging}             #减号向前翻页
+    - { accept: equal, send: Page_Down, when: has_menu}    #加号向后翻页
+    - {accept: "Control+8", select: .next, when: always}        #切换方案
+    - {accept: "Control+7", toggle: spelling, when: always}     #切换显示词频
+# minus/减号，equal/等号，comma/逗号，period/句号，exclam/感叹号，numbersign/井号，percent/百分号，semicolon/分号，apostrophe/单引号,bracketleft/左中括号,bracketright/右中括号
+

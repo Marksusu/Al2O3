@@ -1,0 +1,61 @@
+# Rime schema
+# encoding: utf-8
+
+customization:
+  distribution_code_name: ibus
+  distribution_version: 0.14.3
+  generator: "Rime::SwitcherSettings"
+  modified_time: "Mon May 10 17:59:02 2021"
+  rime_version: 1.7.3
+patch:
+  ascii_composer:
+    good_old_caps_lock: true
+    switch_key: {Caps_Lock: commit_code, Control_L: noop, Control_R: noop, Eisu_toggle: clear, Shift_L: commit_code, Shift_R: noop}
+
+  menu:
+    page_size: 10
+  schema_list:
+    - {schema: pin}
+    - {schema: tcAL2O3}
+    - {schema: tcAL2O3abbr}
+    - {schema: tcAL2O3five}
+    - {schema: cnAL2O3}
+    - {schema: cnAL2O3abbr}
+    - {schema: cnAL2O3five}
+    - {schema: four_corner_method}
+    - {schema: groke}
+    - {schema: mk_fy}
+    - {schema: ipa_yunlong}
+    - {schema: weight}
+#    - schema: luna_pinyin
+#    - schema: luna_pinyin_simp
+#    - schema: luna_pinyin_fluency
+  "switcher/hotkeys":
+    - "Control+grave"
+    - "Control+Alt+0"
+#    - F4
+
+#  "switcher/save_options":
+#    - full_shape
+#    - ascii_punct
+#    - simplification
+#    - zh_hans
+#    - reverse_lookup_filter
+#    - emoji_suggestion
+  switcher/caption: "Mark"
+  switcher/option_list_separator: "·"
+
+  key_binder/bindings:                                               # 可在各方案下单独设置所看到的
+    - {accept: Return, send: Escape, when: composing}
+    - {accept: semicolon, send: 2, when: has_menu}                       # 打字时，分号──2选
+    - {accept: apostrophe, send: 3, when: has_menu}                     # 打字时，引号──3选
+    - {accept: comma, send: 4, when: has_menu}                          # 打字时，逗号──4选
+    - {accept: period, send: 5, when: has_menu}                          # 打字时，句号──5选
+    - {accept: slash, send: 6, when: has_menu}                          # 打字时，撇斜杠──6选
+    - {accept: bracketleft, send: 7, when: has_menu}                          # 打字时，左方括号──7选
+    - {accept: bracketright, send: 8, when: has_menu}                          # 打字时，右方括号──8选
+    - {accept: minus, send: Page_Up, when: has_menu}                   # 号向前翻页
+    - {accept: equal, send: Page_Down, when: has_menu}                # 加号向后翻页
+    - {accept: "Control+8", select: .next, when: always}             # 切换方案
+
+# minus/减号，equal/等号，comma/逗号，period/句号，exclam/感叹号，numbersign/井号，percent/百分号，semicolon/分号，apostrophe/单引号,bracketleft/左中括号,bracketright/右中括号

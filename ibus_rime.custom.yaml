@@ -1,0 +1,12 @@
+__build_info:
+  rime_version: 1.8.5
+  timestamps:
+    ibus_rime: 1611495485
+    ibus_rime.custom: 1661608078
+config_version: 1.0
+style:
+  cursor_type: insert         #insert|select
+  horizontal: true           #true|false
+  inline_preedit: false       #true|false
+  preedit_style: preview      #composition|preview
+  color_scheme: aqua          #null|aqua|azure|ink|luna

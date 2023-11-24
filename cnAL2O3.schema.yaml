@@ -1,0 +1,152 @@
+# Rime schema
+# encoding: utf-8
+
+
+schema:
+  schema_id: cnAL2O3
+  name: "cnAL₂O₃"
+  version: "2022.09.10"
+  author:
+    - 发明创始：学者秋风
+    - 方案修改：伪学者 Mark
+  description: |
+    蓝宝石简体方案“cnAL₂O₃”
+    Mark自用
+    单击“z”键重复上一次输入
+    双击“z”键拼音反查
+  dependencies:
+    - mk_fy
+    - pin
+switches:
+  - name: ascii_mode
+    reset: 1                      # 默认0或没有注明则为前者,若选1则为后者.下同
+    states: [ 中, 英 ]
+  - name: full_shape
+    states: [ 半, 全 ]
+  - name: extended_charset
+    states: [ 通, 增 ]
+    reset: 1
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher                               # 与 recognizer 配合设置反查触发
+    - abc_segmentor
+    - affix_segmentor@cnAL2O3abbr    #用户自定义分割器
+    - affix_segmentor@cnAL2O3five    #用户自定义分割器
+    - fallback_segmentor
+  translators:
+    - reverse_lookup_translator@mk_fy            #这两个反查的顺序直接决定优先级
+    - reverse_lookup_translator@pin         #这两个反查的顺序直接决定优先级
+    - history_translator@history
+    - table_translator
+    - table_translator@cnAL2O3abbr               # 两字二简词、三字三简词、四字成语首字打首、次码，五字以上直取首码到底
+    - table_translator@cnAL2O3five               # 五码去重。三字以上的词，
+
+  filters:
+    - reverse_lookup_filter@weight       # 新的词频提示
+    - uniquifier                     # 必须放在最下面一行，过滤上面产生的重复候选，比如来自上面的 "simplifier@spelling"
+speller:
+  alphabet: 'zyxwvutsrqponmlkjihgfedcba'  #定义可用于输入的键
+
+translator:
+  dictionary: cnAL2O3                       # 引入主码表"cnAL2O3.dict.yaml"
+  initial_quality: 1             #設定此翻譯器出字優先級
+  enable_charset_filter: false   # 是否開啓字符集過濾
+  enable_encoder: false          # 是否開啓自動造詞
+  encode_commit_history: false   # 是否對已上屛詞自動成詞
+  enable_completion: true        # 提前顯示尚未輸入完整碼的字
+  enable_sentence: false         # 太极图自动组句
+  enable_user_dict: false        # 是否开启用户词典（用户词典记录动态字词频、用户词
+  max_phrase_length: 40          # 最大自動成詞詞長
+  always_show_comments: true
+  comment_format:                               # 提示碼自定義
+    - xform/~//                                 # 去掉编码提示前的波浪线
+abc_segmentor:                                  # 標識常規的文字段落，加上abc這個tag
+  extra_tags:
+    - cnAL2O3abbr
+    - cnAL2O3five
+cnAL2O3abbr:                                       # 两码二简词、三码三简词、五码四字成语（第一字打首、次）
+  tag: cnAL2O3abbr
+  dictionary: cnAL2O3abbr
+  initial_quality: 0.01              # 降低二、三码简词的优先级
+  enable_charset_filter: false
+  enable_encoder: false
+  encode_commit_history: false
+  enable_completion: true
+  enable_sentence: false             # 太极图标，自动组词
+  enable_user_dict: false            # 是否开启用户词典（用户词典记录动态字词频、用户词
+  max_phrase_length: 40
+  always_show_comments: true
+  comment_format:
+    - xform/~//      # 去掉编码提示前的波浪线
+
+cnAL2O3five:                                       # 三字词、四字及以上词的五码去重。三字词除中间字只打一码前后两字都打首、次码
+  tag: cnAL2O3five
+  dictionary: cnAL2O3five
+  initial_quality: 0.01              # 降低优先级
+  enable_charset_filter: false
+  enable_encoder: false
+  encode_commit_history: false
+  enable_completion: true
+  enable_sentence: false             # 太极图标，自动组词
+  enable_user_dict: false            # 是否开启用户词典（用户词典记录动态字词频、用户词
+  max_phrase_length: 40
+  always_show_comments: true
+  comment_format:
+    - xform/~//      # 去掉编码提示前的波浪线
+
+pin:                                         # 全拼反查
+  dictionary: pin
+  initial_quality: 1             #設定此翻譯器出字優先級
+  overwrite_comment: true
+  prefix: "zz"
+
+mk_fy:                                               # 双拼反查
+  dictionary: pin
+  initial_quality: 1             #設定此翻譯器出字優先級
+  prism: mk_fy                                  # 把这一行注掉就还原为全拼反查
+  overwrite_comment: true
+  prefix: "zz"
+
+history:                                           #重复上次输入
+  input: z
+  size: 1
+  initial_quality: 1
+
+recognizer:
+  import_preset: default              # 没有默认就不用了吧，网址、邮件从来不用
+  patterns:
+    reverse_lookup: "^zz[a-z]*$"      #反查引导键
+
+weight:                                            # ˉ¨＾ˇ˜˙ˋˊ
+  option_name: weight
+  tags: [ abc ]
+  dictionary: weight
+#  overwrite_comment: true
+  comment_format:
+    - xform/☯/ · /
+    - xform/://
+    - xform/？//
+    - xform/“//
+    - xform/：//
+    - xform/，//
+    - xform/e/˜/
+    - xform/s/¨/
+    - xform/t/ˉ/
+    - xform/<br>/\r/
+#    - "xlit|1234567890|₁₂₃₄₅₆₇₈₉₀|"
+    - xlit|1234567890|¹²³⁴⁵⁶⁷⁸⁹⁰|
+
+key_binder:
+  import_preset: default                #以 default.custom.yaml 中的设置为准

@@ -1,0 +1,101 @@
+# Rime schema settings
+# encoding: utf-8
+# 499679
+# 317522
+# 243617
+# 291519
+# 286640
+
+
+schema:
+  schema_id: groke
+  name: "groke"
+  version: "0.1"
+  author:
+    - 四季的風
+    - 雪齋
+    - Kunki Chou
+  description: |
+    五筆畫
+    fjeiv 代表橫、豎、撇、捺、折
+  dependencies:
+    - pin
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - reverse_lookup_translator
+    - table_translator
+
+speller:
+  alphabet: "abcdefghijklmnopqrstuvwxyz"
+  delimiter: " '"
+
+menu:
+  page_size: 10
+
+translator:
+  dictionary: groke
+  enable_charset_filter: false   # 是否開啓字符集過濾
+  enable_encoder: false          # 是否開啓自動造詞
+  encode_commit_history: false   # 是否對已上屛詞自動成詞
+  enable_completion: true        # 提前顯示尚未輸入完整碼的字
+  enable_sentence: false         # 太极图自动组句
+  enable_user_dict: false        # 是否开启用户词典（用户词典记录动态字词频、用户词
+  max_phrase_length: 40          # 最大自動成詞詞長
+  always_show_comments: true
+
+  preedit_format:
+    - xlit/fjeiv/一丨丿丶乙/
+  comment_format:
+    - xform/~//
+    - xlit/fjeiv/一丨丿丶乙/
+
+reverse_lookup:
+  dictionary: pin
+  prism: mk_fy                                  # 把这一行注掉就还原为全拼反查
+  prefix: "z"
+  suffix: "'"
+  tips: 〔MK雙拼〕
+  preedit_format:
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+  comment_format:
+    - xlit/fjeiv/一丨丿丶乙/
+
+punctuator:
+  import_preset: default
+
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    reverse_lookup: "z[a-z]*'?$"

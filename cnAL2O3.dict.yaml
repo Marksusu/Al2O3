@@ -1,0 +1,42 @@
+# Rime dictionary: 
+# encoding: utf-8
+
+# Al2O3 方案的整体说明           # 单字、一简词均为手动调频，二简、三简、五码……都以“主词库”和“单字库”为原料自动生成────20220727
+#                                # tc 、 cn 是区分繁简方案的前缀，组织思路均相似。
+# cnAL2O3.dict.yaml              # 主词库全码（四码定长）规则。其中三字词为“首字取两码，二、三字取一码。
+# cnAL2O3.schema.yaml            # 全码方案配方。用于组织全码方案和简词方案的搭配。
+# cnAL2O3_basic.dict.yaml        # 主词库。文件最大。除部分四字词〔X来X去〕外，均为“有频无码”，是全码词和简词的编码原料。
+# cnAL2O3_characters.dict.yaml   # 单字库。包含所有单字。是词库的取码标准（事实上，有码的单字，放在相连的任何一个词库文件里都可以参与自动编码〔2022.08〕）。
+# cnAL2O3abbr.dict.yaml          # 简词规则。用于将主词库的词编码为简词。其中，一简词与主词库无关，完全手动；二字、三字词取首字首码，五字取每字首码可以一直打到底，爽！
+#                                #  “四字成语的首字补救措施”，仅对四字词组有效。比如，“辗转反侧”，可能最初只想到打 “辗转”，当 “辗” 的前两码打完才想到可以四个字一起打。
+# cnAL2O3abbr.schema.yaml        # 简词方案配方。
+# cnAL2O3five.dict.yaml          # 五码规则。三字以上的词，末字可以取两码。
+# cnAL2O3five.schema.yaml        # 五码方案配方。
+# AL2O3_symbols.dict.yaml        # 目前为繁简共用的标点符号、英文缩写及其它符号组合，也包含 “仍未编码的生僻字” 和 “有码无频的所有单字”。
+
+---
+name: cnAL2O3
+version: "2022.09.10"
+sort: by_weight                        # 码表的排序方式: by_weight 权重，original 原始顺序
+import_tables:                         # 组织词库，下列词库排序影响最终的候选排序。
+  - cnAL2O3_characters                 # 所有单字，有字频
+  - AL2O3_symbols                      # tc 和 cn 共同的符号，包含无频单字
+  - cnAL2O3_basic                      # 主词库。简体自定义词库，是全码、二简、三简的编码对象。
+
+
+columns:    # 本词典码表格式
+  - text    # 文字
+  - code    # 输入码
+  - weight  # 权重
+  - stem    # 全码
+encoder:
+  rules:                          # 词中字序大写，字中编码序小写
+
+    - length_equal: 2               # 二字词
+      formula: "AaAbBaBb"           # 首字首、次码；二字首、次码
+    - length_equal: 3               # 三字词
+      formula: "AaAbBaCa"           # 首字首、次码；二字、三字首码
+    - length_in_range: [4, 40]      # 4 到 40 字
+      formula: "AaBaCaZa"           # 首、二、三、末，均取首码
+...
+

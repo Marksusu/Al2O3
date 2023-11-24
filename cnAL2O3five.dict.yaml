@@ -1,0 +1,31 @@
+# Rime dictionary: 
+# encoding: utf-8
+# 用原版的單字和詞庫，構建縮簡詞庫
+# 词库
+
+
+
+
+---
+name: cnAL2O3five
+version: "2020.10.28"
+sort: by_weight       # 码表的排序方式: by_weight 权重，original 原始顺序
+import_tables:                   # 编码造词的单字原料？
+  - cnAL2O3_basic                   # 選取單字
+  - cnAL2O3_characters          # 選取詞庫
+columns:    # 本词典码表格式
+  - text    # 文字
+  - code    # 输入码
+  - weight  # 权重
+  - stem    # 全码
+encoder:
+#  exclude_patterns:      # 排除Z键的输入
+#    - '^z.*$'
+  rules:                        # 大写字母表示字序，小写字母表示其所跟随的大写字母所代表的字中的编码序
+    - length_equal: 3             # 三字词
+      formula: "AaAbBaCaCb"           # 取第一字首、次码，第二字首码、第三字首、次码
+    - length_in_range: [4, 40]             # 4字及以上
+      formula: "AaBaCaZaZb"           # 一二三首码，末字首次码
+
+...
+
